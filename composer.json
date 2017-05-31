@@ -1,0 +1,19 @@
+{
+  "name": "igorv/database",
+  "description": "Simple database querybuilder for PDO.",
+  "type": "library",
+  "license": "MIT",
+  "minimum-stability": "stable",
+  "authors": [
+    {
+      "name": "Igor",
+      "email": "lolrogii@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "IgorV\\Database\\": "src/Database/"
+    }
+  },
+  "require": {}
+}
