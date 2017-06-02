@@ -5,18 +5,25 @@ namespace IgorV\Database;
 class DB {
 
     /**
+     * Instance of Connection object.
+     *
      * @var Connection
      */
     protected static $instance;
 
     /**
+     * Database configuration.
+     *
      * @var array
      */
     protected static $config;
 
     /**
+     * Tunnel any non-existent static calls as object call on Connection.
+     *
      * @param $method
      * @param $arguments
+     * @throws \PDOException
      * @return mixed
      */
     public static function __callStatic($method, $arguments)
@@ -29,6 +36,8 @@ class DB {
     }
 
     /**
+     * Set database configuration.
+     *
      * @param $config
      */
     public static function config($config)
@@ -41,7 +50,10 @@ class DB {
     }
 
     /**
-     * @return mixed
+     * Return singleton instance of Connection.
+     *
+     * @return Connection
+     * @throws \RuntimeException
      */
     public static function getInstance()
     {

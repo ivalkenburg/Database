@@ -5,6 +5,8 @@ namespace IgorV\Database;
 class ResultSet implements \JsonSerializable, \ArrayAccess {
 
     /**
+     * Return result set as JSON.
+     *
      * @return string
      */
     public function asJson()
@@ -13,6 +15,8 @@ class ResultSet implements \JsonSerializable, \ArrayAccess {
     }
 
     /**
+     * Return result set as an array.
+     *
      * @return array
      */
     public function asArray()

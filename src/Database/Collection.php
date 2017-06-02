@@ -5,6 +5,8 @@ namespace IgorV\Database;
 class Collection implements \ArrayAccess, \Countable, \JsonSerializable, \IteratorAggregate {
 
     /**
+     * Collection of items
+     *
      * @var array
      */
     protected $collection;
@@ -61,6 +63,8 @@ class Collection implements \ArrayAccess, \Countable, \JsonSerializable, \Iterat
     }
 
     /**
+     * Return collection as JSON.
+     *
      * @return string
      */
     public function asJson()
@@ -69,6 +73,8 @@ class Collection implements \ArrayAccess, \Countable, \JsonSerializable, \Iterat
     }
 
     /**
+     * Return collection as an array.
+     *
      * @return array
      */
     public function asArray()
@@ -95,6 +101,8 @@ class Collection implements \ArrayAccess, \Countable, \JsonSerializable, \Iterat
     }
 
     /**
+     * Pluck single key from all items and returns it as a new collection.
+     *
      * @param $column
      * @return static
      */

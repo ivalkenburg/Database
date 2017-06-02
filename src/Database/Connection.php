@@ -7,6 +7,8 @@ use \PDO;
 class Connection {
 
     /**
+     * Active instance of PDO.
+     *
      * @var PDO
      */
     protected $pdo;
@@ -20,6 +22,8 @@ class Connection {
     }
 
     /**
+     * Start fluent query builder.
+     *
      * @param $table
      * @return QueryBuilder
      */
@@ -29,6 +33,8 @@ class Connection {
     }
 
     /**
+     * Perform a SELECT SQL query and return a Collection.
+     *
      * @param        $query
      * @param array  $params
      * @param string $class
@@ -37,19 +43,27 @@ class Connection {
     public function select($query, $params = [], $class = ResultSet::class)
     {
         return new Collection(
-            $this->execute($query, $params)->fetchAll(PDO::FETCH_CLASS, $class)
+            $this->execute($query, $params, $class)->fetchAll()
         );
     }
 
     /**
+     * Execute raw SQL query and return executed PDO statement.
+     *
      * @param       $query
      * @param array $params
+     * @param       $class
      * @return \PDOStatement
      */
-    public function execute($query, $params = [])
+    public function execute($query, $params = [], $class = null)
     {
         try {
             $stmt = $this->pdo->prepare($query);
+
+            if ( ! is_null($class)) {
+                $stmt->setFetchMode(PDO::FETCH_CLASS, $class);
+            }
+
             $stmt->execute($params);
 
             return $stmt;
@@ -59,6 +73,8 @@ class Connection {
     }
 
     /**
+     * Execute SELECT SQL query and return the first row.
+     *
      * @param        $query
      * @param array  $params
      * @param string $class
@@ -66,12 +82,12 @@ class Connection {
      */
     public function selectOne($query, $params = [], $class = ResultSet::class)
     {
-        $results = $this->execute($query, $params)->fetchAll(PDO::FETCH_CLASS, $class);
-
-        return (count($results)) ? $results[0] : null;
+        return $this->execute($query, $params, $class)->fetch();
     }
 
     /**
+     * Execute INSERT query.
+     *
      * @param $query
      * @param $params
      * @return int
@@ -82,6 +98,8 @@ class Connection {
     }
 
     /**
+     * Execute UPDATE query.
+     *
      * @param $query
      * @param $params
      * @return int
@@ -92,6 +110,8 @@ class Connection {
     }
 
     /**
+     * Execute DELETE query.
+     *
      * @param       $query
      * @param array $params
      * @return int
@@ -102,25 +122,30 @@ class Connection {
     }
 
     /**
+     * Start a transaction, execute callback and commits if no Exception is thrown.
+     *
      * @param callable $callback
      * @throws \Exception
+     * @return mixed
      */
     public function transaction(callable $callback)
     {
         try {
             $this->beginTransaction();
-            $callback();
+            $return = $callback();
             $this->commit();
+
+            return $return;
         } catch (\Exception $e) {
-            if ($this->pdo->inTransaction()) {
-                $this->rollBack();
-            }
+            $this->rollBack();
 
             throw $e;
         }
     }
 
     /**
+     * Start a transaction.
+     *
      * @return bool
      */
     public function beginTransaction()
@@ -129,22 +154,32 @@ class Connection {
     }
 
     /**
+     * Commit a transaction.
+     *
      * @return bool
      */
     public function commit()
     {
+        if ( ! $this->pdo->inTransaction()) throw new \RuntimeException('Can not commit transaction if not currently in transaction');
+
         return $this->pdo->commit();
     }
 
     /**
+     * Rollback a transaction.
+     *
      * @return bool
      */
     public function rollBack()
     {
+        if ( ! $this->pdo->inTransaction()) throw new \RuntimeException('Can not rollback transaction if not currently in transaction');
+
         return $this->pdo->rollBack();
     }
 
     /**
+     * Get current PDO instance.
+     *
      * @return PDO
      */
     public function getPDO()
@@ -152,12 +187,17 @@ class Connection {
         return $this->pdo;
     }
 
+    /**
+     * @return void
+     */
     public function __destruct()
     {
         $this->pdo = null;
     }
 
     /**
+     * Tunnel every non-existent call to PDO object.
+     *
      * @param $method
      * @param $arguments
      * @return mixed
