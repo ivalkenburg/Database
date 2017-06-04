@@ -37,7 +37,7 @@ class QueryBuilder {
      *
      * @var string
      */
-    protected $as;
+    protected $as = null;
 
     /**
      * Number of maximum returned rows.
@@ -176,6 +176,18 @@ class QueryBuilder {
     }
 
     /**
+     * Duplicate of sortBy()
+     *
+     * @param        $column
+     * @param string $order
+     * @return QueryBuilder
+     */
+    public function orderBy($column, $order = 'ASC')
+    {
+        return $this->sortBy($column, $order);
+    }
+
+    /**
      * Set the order for a query.
      *
      * @param        $column
@@ -187,18 +199,6 @@ class QueryBuilder {
         $this->order[$column] = strtoupper($order);
 
         return $this;
-    }
-
-    /**
-     * Duplicate of sortBy()
-     *
-     * @param        $column
-     * @param string $order
-     * @return QueryBuilder
-     */
-    public function orderBy($column, $order = 'ASC')
-    {
-        return $this->sortBy($column, $order);
     }
 
     /**
@@ -215,7 +215,7 @@ class QueryBuilder {
         $query = $this->buildSelect() . $this->buildWhere() . $this->buildLimit();
 
         return $this->connection->selectOne(
-            $query, array_column($this->where, 'value'), $this->as ?? ResultSet::class
+            $query, array_column($this->where, 'value'), $this->as
         );
     }
 
@@ -261,20 +261,6 @@ class QueryBuilder {
     }
 
     /**
-     * Execute SELECT query and return the number of rows in the result.
-     *
-     * @return int
-     */
-    public function count()
-    {
-        $this->select = ['COUNT(*)'];
-
-        $query = $this->buildSelect() . $this->buildWhere() . $this->buildLimit() . $this->buildOffset();
-
-        return (int) current($this->connection->selectOne($query, array_column($this->where, 'value')));
-    }
-
-    /**
      * Build ORDER clause.
      *
      * @return string
@@ -302,6 +288,21 @@ class QueryBuilder {
         if ( ! isset($this->offset)) return '';
 
         return " OFFSET {$this->offset}";
+    }
+
+    /**
+     * Execute SELECT query and return the number of rows in the result.
+     *
+     * @param string $column
+     * @return int
+     */
+    public function count($column = '*')
+    {
+        $this->select = ["COUNT($column)"];
+
+        $query = $this->buildSelect() . $this->buildWhere() . $this->buildLimit() . $this->buildOffset();
+
+        return (int) current($this->connection->selectOne($query, array_column($this->where, 'value')));
     }
 
     /**
@@ -373,7 +374,7 @@ class QueryBuilder {
      */
     public function offset($offset)
     {
-        $this->offset = $offset;
+        $this->offset = (int) $offset;
 
         return $this;
     }

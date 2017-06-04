@@ -3,6 +3,7 @@
 namespace IgorV\Database;
 
 use \PDO;
+use RuntimeException;
 
 class Connection {
 
@@ -40,7 +41,7 @@ class Connection {
      * @param string $class
      * @return Collection
      */
-    public function select($query, $params = [], $class = ResultSet::class)
+    public function select($query, $params = [], $class = null)
     {
         return new Collection(
             $this->execute($query, $params, $class)->fetchAll()
@@ -48,7 +49,7 @@ class Connection {
     }
 
     /**
-     * Execute raw SQL query and return executed PDO statement.
+     * Execute raw SQL query and return executed PDOStatement.
      *
      * @param       $query
      * @param array $params
@@ -57,13 +58,11 @@ class Connection {
      */
     public function execute($query, $params = [], $class = null)
     {
+        $class = $class ?: ResultSet::class;
+
         try {
             $stmt = $this->pdo->prepare($query);
-
-            if ( ! is_null($class)) {
-                $stmt->setFetchMode(PDO::FETCH_CLASS, $class);
-            }
-
+            $stmt->setFetchMode(PDO::FETCH_CLASS, $class);
             $stmt->execute($params);
 
             return $stmt;
@@ -80,7 +79,7 @@ class Connection {
      * @param string $class
      * @return null
      */
-    public function selectOne($query, $params = [], $class = ResultSet::class)
+    public function selectOne($query, $params = [], $class = null)
     {
         return $this->execute($query, $params, $class)->fetch();
     }
@@ -122,7 +121,7 @@ class Connection {
     }
 
     /**
-     * Start a transaction, execute callback and commits if no Exception is thrown.
+     * Start a transaction, execute callback and commit if no Exception is thrown.
      *
      * @param callable $callback
      * @throws \Exception
@@ -160,7 +159,7 @@ class Connection {
      */
     public function commit()
     {
-        if ( ! $this->pdo->inTransaction()) throw new \RuntimeException('Can not commit transaction if not currently in transaction');
+        if ( ! $this->pdo->inTransaction()) throw new RuntimeException('Unable to commit if not in transaction');
 
         return $this->pdo->commit();
     }
@@ -172,7 +171,7 @@ class Connection {
      */
     public function rollBack()
     {
-        if ( ! $this->pdo->inTransaction()) throw new \RuntimeException('Can not rollback transaction if not currently in transaction');
+        if ( ! $this->pdo->inTransaction()) throw new RuntimeException('Unable to rollback if not in transaction');
 
         return $this->pdo->rollBack();
     }

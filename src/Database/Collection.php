@@ -101,7 +101,7 @@ class Collection implements \ArrayAccess, \Countable, \JsonSerializable, \Iterat
     }
 
     /**
-     * Pluck single key from all items and returns it as a new collection.
+     * Pluck single column from all items as a new collection.
      *
      * @param $column
      * @return static
@@ -109,5 +109,16 @@ class Collection implements \ArrayAccess, \Countable, \JsonSerializable, \Iterat
     public function pluck($column)
     {
         return new static(array_column($this->collection, $column));
+    }
+
+    /**
+     * Filter through collection and return a new collection.
+     *
+     * @param callable $callback
+     * @return static
+     */
+    public function filter(callable $callback)
+    {
+        return new static(array_filter($this->collection, $callback));
     }
 }
