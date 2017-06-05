@@ -212,7 +212,7 @@ class QueryBuilder {
         $this->limit  = 1;
         $this->select = $columns;
 
-        $query = $this->buildSelect() . $this->buildWhere() . $this->buildLimit();
+        $query = $this->buildSelect() . $this->buildWhere() . $this->buildOrder() . $this->buildLimit();
 
         return $this->connection->selectOne(
             $query, array_column($this->where, 'value'), $this->as
@@ -229,6 +229,24 @@ class QueryBuilder {
         $columns = ! empty($this->select) ? implode(',', $this->select) : '*';
 
         return "SELECT {$columns} FROM {$this->table}";
+    }
+
+    /**
+     * Build ORDER clause.
+     *
+     * @return string
+     */
+    protected function buildOrder()
+    {
+        if (empty($this->order)) return '';
+
+        $orders = [];
+
+        foreach ($this->order as $column => $order) {
+            $orders[] = "{$column} {$order}";
+        }
+
+        return ' ORDER BY ' . implode(',', $orders);
     }
 
     /**
@@ -261,24 +279,6 @@ class QueryBuilder {
     }
 
     /**
-     * Build ORDER clause.
-     *
-     * @return string
-     */
-    protected function buildOrder()
-    {
-        if (empty($this->order)) return '';
-
-        $orders = [];
-
-        foreach ($this->order as $column => $order) {
-            $orders[] = "{$column} {$order}";
-        }
-
-        return ' ORDER BY ' . implode(',', $orders);
-    }
-
-    /**
      * Build OFFSET clause.
      *
      * @return string
@@ -302,7 +302,9 @@ class QueryBuilder {
 
         $query = $this->buildSelect() . $this->buildWhere() . $this->buildLimit() . $this->buildOffset();
 
-        return (int) current($this->connection->selectOne($query, array_column($this->where, 'value')));
+        return (int) current(
+            $this->connection->selectOne($query, array_column($this->where, 'value'))
+        );
     }
 
     /**

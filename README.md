@@ -56,7 +56,7 @@ Deleting records is done by appending delete() method. Returns the number of aff
 ```php
 $deleted = DB::table('users')->where('age', '>', '10')->delete(); 
 ```
-Count records is done by appending count() method. Returns the number of rows matching your query:
+Counting records can be done by appending count() method. Returns the number of rows matching your query:
 ```php
 $number = DB::table('users')->where('active', true)->count();
 ```

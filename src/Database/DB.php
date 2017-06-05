@@ -43,7 +43,7 @@ class DB {
     public static function config($config)
     {
         if ( ! is_array($config)) {
-            throw new \InvalidArgumentException('Config must an array');
+            throw new \InvalidArgumentException('Argument must be an array');
         }
 
         static::$config = $config;
@@ -60,7 +60,7 @@ class DB {
         if ( ! isset(static::$instance)) {
 
             if ( ! isset(static::$config)) {
-                throw new \RuntimeException('No configuration details are set');
+                throw new \RuntimeException('No database configurations are set');
             }
 
             static::$instance = new Connection(static::$config);
