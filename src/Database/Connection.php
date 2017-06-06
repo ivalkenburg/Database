@@ -8,7 +8,7 @@ use RuntimeException;
 class Connection {
 
     /**
-     * Active instance of PDO.
+     * Instance of PDO.
      *
      * @var PDO
      */
@@ -23,7 +23,7 @@ class Connection {
     }
 
     /**
-     * Start fluent query builder.
+     * Begin fluent query builder.
      *
      * @param $table
      * @return QueryBuilder

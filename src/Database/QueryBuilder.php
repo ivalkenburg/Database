@@ -71,7 +71,7 @@ class QueryBuilder {
     }
 
     /**
-     * Sets WHERE clause constraints.
+     * Sets WHERE constraints.
      *
      * @param array ...$args
      * @return $this
@@ -100,7 +100,7 @@ class QueryBuilder {
     }
 
     /**
-     * Execute query as an INSERT query.
+     * Execute as an INSERT query.
      *
      * @param array $data
      * @return int
@@ -111,7 +111,7 @@ class QueryBuilder {
     }
 
     /**
-     * Build INSERT query.
+     * Build INSERT query string.
      *
      * @param $data
      * @return string
@@ -141,7 +141,7 @@ class QueryBuilder {
     }
 
     /**
-     * Build UPDATE query.
+     * Build UPDATE query string.
      *
      * @param $data
      * @return string
@@ -158,7 +158,7 @@ class QueryBuilder {
     }
 
     /**
-     * Build WHERE clause for query.
+     * Build WHERE query string.
      *
      * @return string
      */
@@ -220,7 +220,7 @@ class QueryBuilder {
     }
 
     /**
-     * Build SELECT query.
+     * Build SELECT query string.
      *
      * @return string
      */
@@ -232,7 +232,7 @@ class QueryBuilder {
     }
 
     /**
-     * Build ORDER clause.
+     * Build ORDER query string.
      *
      * @return string
      */
@@ -250,7 +250,7 @@ class QueryBuilder {
     }
 
     /**
-     * Build LIMIT clause.
+     * Build LIMIT query string.
      *
      * @return string
      */
@@ -279,7 +279,7 @@ class QueryBuilder {
     }
 
     /**
-     * Build OFFSET clause.
+     * Build OFFSET query string.
      *
      * @return string
      */
@@ -308,7 +308,7 @@ class QueryBuilder {
     }
 
     /**
-     * Execute query as a DELETE query and returns the number of rows affected.
+     * Execute query as a DELETE query and return the number of rows affected.
      *
      * @return int
      */
@@ -322,7 +322,7 @@ class QueryBuilder {
     }
 
     /**
-     * Build DELETE query.
+     * Build DELETE query string.
      *
      * @return string
      */

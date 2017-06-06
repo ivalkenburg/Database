@@ -9,7 +9,7 @@ class DB {
      *
      * @var Connection
      */
-    protected static $instance;
+    protected static $connection;
 
     /**
      * Database configuration.
@@ -19,7 +19,7 @@ class DB {
     protected static $config;
 
     /**
-     * Tunnel any non-existent static calls as object call on Connection.
+     * Tunnel any non-existent static calls as object calls on the Connection object.
      *
      * @param $method
      * @param $arguments
@@ -29,7 +29,7 @@ class DB {
     public static function __callStatic($method, $arguments)
     {
         try {
-            return static::getInstance()->$method(...$arguments);
+            return static::getConnection()->$method(...$arguments);
         } catch (\PDOException $e) {
             die($e->getMessage());
         }
@@ -55,17 +55,17 @@ class DB {
      * @return Connection
      * @throws \RuntimeException
      */
-    public static function getInstance()
+    public static function getConnection()
     {
-        if ( ! isset(static::$instance)) {
+        if ( ! isset(static::$connection)) {
 
             if ( ! isset(static::$config)) {
                 throw new \RuntimeException('No database configurations are set');
             }
 
-            static::$instance = new Connection(static::$config);
+            static::$connection = new Connection(static::$config);
         }
 
-        return static::$instance;
+        return static::$connection;
     }
 }
