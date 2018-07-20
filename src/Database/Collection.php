@@ -2,10 +2,10 @@
 
 namespace IgorV\Database;
 
-class Collection implements \ArrayAccess, \Countable, \JsonSerializable, \IteratorAggregate {
-
+class Collection implements \ArrayAccess, \Countable, \JsonSerializable, \IteratorAggregate
+{
     /**
-     * Collection of items
+     * Collection of items.
      *
      * @var array
      */
@@ -21,6 +21,7 @@ class Collection implements \ArrayAccess, \Countable, \JsonSerializable, \Iterat
 
     /**
      * @param mixed $offset
+     *
      * @return bool
      */
     public function offsetExists($offset)
@@ -30,6 +31,7 @@ class Collection implements \ArrayAccess, \Countable, \JsonSerializable, \Iterat
 
     /**
      * @param mixed $offset
+     *
      * @return mixed
      */
     public function offsetGet($offset)
@@ -79,7 +81,7 @@ class Collection implements \ArrayAccess, \Countable, \JsonSerializable, \Iterat
      */
     public function asArray()
     {
-        return array_map(function($row) {
+        return array_map(function ($row) {
             return (array) $row;
         }, $this->collection);
     }
@@ -104,6 +106,7 @@ class Collection implements \ArrayAccess, \Countable, \JsonSerializable, \Iterat
      * Pluck single column from all items as a new collection.
      *
      * @param $column
+     *
      * @return static
      */
     public function pluck($column)
@@ -115,6 +118,7 @@ class Collection implements \ArrayAccess, \Countable, \JsonSerializable, \Iterat
      * Filter through collection and return a new collection.
      *
      * @param callable $callback
+     *
      * @return static
      */
     public function filter(callable $callback)

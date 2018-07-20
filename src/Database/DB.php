@@ -2,8 +2,8 @@
 
 namespace IgorV\Database;
 
-class DB {
-
+class DB
+{
     /**
      * Instance of Connection object.
      *
@@ -23,7 +23,9 @@ class DB {
      *
      * @param $method
      * @param $arguments
+     *
      * @throws \PDOException
+     *
      * @return mixed
      */
     public static function __callStatic($method, $arguments)
@@ -42,7 +44,7 @@ class DB {
      */
     public static function config($config)
     {
-        if ( ! is_array($config)) {
+        if (!is_array($config)) {
             throw new \InvalidArgumentException('Argument must be an array');
         }
 
@@ -52,14 +54,14 @@ class DB {
     /**
      * Return singleton instance of Connection.
      *
-     * @return Connection
      * @throws \RuntimeException
+     *
+     * @return Connection
      */
     public static function getConnection()
     {
-        if ( ! isset(static::$connection)) {
-
-            if ( ! isset(static::$config)) {
+        if (!isset(static::$connection)) {
+            if (!isset(static::$config)) {
                 throw new \RuntimeException('No database configurations are set');
             }
 
