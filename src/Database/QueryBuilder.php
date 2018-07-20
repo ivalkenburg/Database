@@ -2,8 +2,8 @@
 
 namespace IgorV\Database;
 
-class QueryBuilder {
-
+class QueryBuilder
+{
     /**
      * Instance of Connection object.
      *
@@ -67,13 +67,14 @@ class QueryBuilder {
     public function __construct(Connection $connection, $table)
     {
         $this->connection = $connection;
-        $this->table      = $table;
+        $this->table = $table;
     }
 
     /**
      * Sets WHERE constraints.
      *
      * @param array ...$args
+     *
      * @return $this
      */
     public function where(...$args)
@@ -82,7 +83,7 @@ class QueryBuilder {
             $this->where[] = [
                 'field'    => $args[0],
                 'operator' => $args[1],
-                'value'    => $args[2]
+                'value'    => $args[2],
             ];
         } elseif (is_array($args[0])) {
             foreach ($args[0] as $condition) {
@@ -92,7 +93,7 @@ class QueryBuilder {
             $this->where[] = [
                 'field'    => $args[0],
                 'operator' => '=',
-                'value'    => $args[1]
+                'value'    => $args[1],
             ];
         }
 
@@ -103,6 +104,7 @@ class QueryBuilder {
      * Execute as an INSERT query.
      *
      * @param array $data
+     *
      * @return int
      */
     public function insert($data = [])
@@ -114,6 +116,7 @@ class QueryBuilder {
      * Build INSERT query string.
      *
      * @param $data
+     *
      * @return string
      */
     protected function buildInsert($data)
@@ -128,22 +131,23 @@ class QueryBuilder {
      * Execute query as an UPDATE query.
      *
      * @param $data
+     *
      * @return int
      */
     public function update($data)
     {
-        $query = $this->buildUpdate($data) . $this->buildWhere();
+        $query = $this->buildUpdate($data).$this->buildWhere();
 
         return $this->connection->update(
             $query, array_merge(array_values($data), array_column($this->where, 'value'))
         );
-
     }
 
     /**
      * Build UPDATE query string.
      *
      * @param $data
+     *
      * @return string
      */
     protected function buildUpdate($data)
@@ -154,7 +158,7 @@ class QueryBuilder {
             $updates[] = "{$field} = ?";
         }
 
-        return "UPDATE {$this->table} SET " . implode(',', $updates);
+        return "UPDATE {$this->table} SET ".implode(',', $updates);
     }
 
     /**
@@ -164,7 +168,9 @@ class QueryBuilder {
      */
     protected function buildWhere()
     {
-        if (empty($this->where)) return '';
+        if (empty($this->where)) {
+            return '';
+        }
 
         $constraints = [];
 
@@ -172,14 +178,15 @@ class QueryBuilder {
             $constraints[] = "{$constraint['field']} {$constraint['operator']} ?";
         }
 
-        return ' WHERE ' . implode(' AND ', $constraints);
+        return ' WHERE '.implode(' AND ', $constraints);
     }
 
     /**
-     * Duplicate of sortBy()
+     * Duplicate of sortBy().
      *
      * @param        $column
      * @param string $order
+     *
      * @return QueryBuilder
      */
     public function orderBy($column, $order = 'ASC')
@@ -192,6 +199,7 @@ class QueryBuilder {
      *
      * @param        $column
      * @param string $order
+     *
      * @return $this
      */
     public function sortBy($column, $order = 'ASC')
@@ -205,14 +213,15 @@ class QueryBuilder {
      * Execute query as an SELECT query and return the first row.
      *
      * @param array ...$columns
+     *
      * @return mixed
      */
     public function first(...$columns)
     {
-        $this->limit  = 1;
+        $this->limit = 1;
         $this->select = $columns;
 
-        $query = $this->buildSelect() . $this->buildWhere() . $this->buildOrder() . $this->buildLimit();
+        $query = $this->buildSelect().$this->buildWhere().$this->buildOrder().$this->buildLimit();
 
         return $this->connection->selectOne(
             $query, array_column($this->where, 'value'), $this->as
@@ -226,7 +235,7 @@ class QueryBuilder {
      */
     protected function buildSelect()
     {
-        $columns = ! empty($this->select) ? implode(',', $this->select) : '*';
+        $columns = !empty($this->select) ? implode(',', $this->select) : '*';
 
         return "SELECT {$columns} FROM {$this->table}";
     }
@@ -238,7 +247,9 @@ class QueryBuilder {
      */
     protected function buildOrder()
     {
-        if (empty($this->order)) return '';
+        if (empty($this->order)) {
+            return '';
+        }
 
         $orders = [];
 
@@ -246,7 +257,7 @@ class QueryBuilder {
             $orders[] = "{$column} {$order}";
         }
 
-        return ' ORDER BY ' . implode(',', $orders);
+        return ' ORDER BY '.implode(',', $orders);
     }
 
     /**
@@ -256,7 +267,9 @@ class QueryBuilder {
      */
     protected function buildLimit()
     {
-        if ( ! isset($this->limit)) return '';
+        if (!isset($this->limit)) {
+            return '';
+        }
 
         return " LIMIT {$this->limit}";
     }
@@ -265,13 +278,16 @@ class QueryBuilder {
      * Execute query as an SELECT query and return the results as a Collection object.
      *
      * @param array ...$columns
+     *
      * @return Collection
      */
     public function get(...$columns)
     {
-        if ( ! empty($columns)) $this->select = $columns;
+        if (!empty($columns)) {
+            $this->select = $columns;
+        }
 
-        $query = $this->buildSelect() . $this->buildWhere() . $this->buildOrder() . $this->buildLimit() . $this->buildOffset();
+        $query = $this->buildSelect().$this->buildWhere().$this->buildOrder().$this->buildLimit().$this->buildOffset();
 
         return $this->connection->select(
             $query, array_column($this->where, 'value'), $this->as ?? ResultSet::class
@@ -285,7 +301,9 @@ class QueryBuilder {
      */
     protected function buildOffset()
     {
-        if ( ! isset($this->offset)) return '';
+        if (!isset($this->offset)) {
+            return '';
+        }
 
         return " OFFSET {$this->offset}";
     }
@@ -294,13 +312,14 @@ class QueryBuilder {
      * Execute SELECT query and return the number of rows in the result.
      *
      * @param string $column
+     *
      * @return int
      */
     public function count($column = '*')
     {
         $this->select = ["COUNT($column)"];
 
-        $query = $this->buildSelect() . $this->buildWhere() . $this->buildLimit() . $this->buildOffset();
+        $query = $this->buildSelect().$this->buildWhere().$this->buildLimit().$this->buildOffset();
 
         return (int) current(
             $this->connection->selectOne($query, array_column($this->where, 'value'))
@@ -314,7 +333,7 @@ class QueryBuilder {
      */
     public function delete()
     {
-        $query = $this->buildDelete() . $this->buildWhere();
+        $query = $this->buildDelete().$this->buildWhere();
 
         return $this->connection->delete(
             $query, array_column($this->where, 'value')
@@ -335,6 +354,7 @@ class QueryBuilder {
      * Set the SELECT columns.
      *
      * @param array ...$select
+     *
      * @return $this
      */
     public function select(...$select)
@@ -348,6 +368,7 @@ class QueryBuilder {
      * Duplicate of limit().
      *
      * @param $amount
+     *
      * @return QueryBuilder
      */
     public function take($amount)
@@ -359,6 +380,7 @@ class QueryBuilder {
      * Set the maximum number of returned rows.
      *
      * @param $amount
+     *
      * @return $this
      */
     public function limit($amount)
@@ -372,6 +394,7 @@ class QueryBuilder {
      * Set the row OFFSET clause.
      *
      * @param $offset
+     *
      * @return $this
      */
     public function offset($offset)
@@ -385,9 +408,10 @@ class QueryBuilder {
      * Set the class to inject rows into. Must be instantiable.
      *
      * @param $class
+     *
      * @return $this
      */
-    public function as ($class)
+    public function as($class)
     {
         $this->as = $class;
 

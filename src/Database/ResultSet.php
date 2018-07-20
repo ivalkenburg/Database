@@ -2,8 +2,8 @@
 
 namespace IgorV\Database;
 
-class ResultSet implements \JsonSerializable, \ArrayAccess {
-
+class ResultSet implements \JsonSerializable, \ArrayAccess
+{
     /**
      * Return result set as JSON.
      *
@@ -27,13 +27,14 @@ class ResultSet implements \JsonSerializable, \ArrayAccess {
     /**
      * @return array
      */
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         return $this->asArray();
     }
 
     /**
      * @param mixed $offset
+     *
      * @return bool
      */
     public function offsetExists($offset)
@@ -43,6 +44,7 @@ class ResultSet implements \JsonSerializable, \ArrayAccess {
 
     /**
      * @param mixed $offset
+     *
      * @return mixed
      */
     public function offsetGet($offset)
